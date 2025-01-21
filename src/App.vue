@@ -6,7 +6,7 @@
         v-bind:value="title"
         class="input"
         type="text"
-        placeholder="Название поста"
+        placeholder="Название поста 11111"  
       />
       <input
         v-bind:value="body"
