@@ -20,7 +20,7 @@
 </template>
 
 <script>
-import MyInput from './UI/MyInput.vue'
+import MyInput from './UI/MyInputPost.vue'
 export default {
   components: { MyInput },
     data() {
