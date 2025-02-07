@@ -1,17 +1,29 @@
 <template>
   <div class="app">
-    <post-form
+    <h3>Страница с постами</h3>
+    <my-button
+      @click="showDialog"
+      style="margin: 15px 0;"
+    >Создать пост</my-button>
+    <my-dialog-post v-model:show ="dialogVisible">
+      <post-form
       @create="createPost"
     />
-    <post-list 
+    </my-dialog-post>
+    <post-list
       :posts="posts"
+      @remove="removePost"
+      v-if="!isPostLoading"
     />
+    <div v-else>Идет загрузка...</div>
   </div>
 </template>
 
 <script>
 import PostForm from './components/PostForm';
 import PostList from './components/PostList';
+import axios from 'axios';
+
 export default {
   components: {
     PostForm,
@@ -19,36 +31,40 @@ export default {
   },
   data() {
     return {
-      posts: [
-        {
-          id: 1,
-          title: "Пост о JS",
-          body: "JavaScript",
-        },
-        {
-          id: 2,
-          title: "Пост о JS 1",
-          body: "JavaScript 1",
-        },
-        {
-          id: 3,
-          title: "Пост о JS 2",
-          body: "JavaScript 2",
-        },
-        {
-          id: 4,
-          title: "Пост о JS 3",
-          body: "JavaScript 3",
-        },
-      ],
+      posts: [],
+      dialogVisible: false,
+      isPostLoading: false
     };
   },
 
   methods: {
     createPost(post) {
       this.posts.push(post)
+      this.dialogVisible = false
     },
+    removePost(post) {
+      this.posts = this.posts.filter(p => p.id !== post.id)
+    },
+    showDialog() {
+      this.dialogVisible = true
+    },
+    async fetchPosts() {
+      try{
+        this.isPostLoading = true
+        const response = await axios.get('https://jsonplaceholder.typicode.com/posts?_limit=10')
+        this.posts = response.data
+      }
+      catch(e) {
+        alert('Ошибка!')
+      }
+      finally {
+        this.isPostLoading = false
+      }
+    }
   },
+  mounted() {
+      this.fetchPosts()
+    }
 };
 </script>
 
